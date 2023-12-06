@@ -11,6 +11,9 @@ class DataCapture:
         self.stats = dict()
 
     def add(self, number: int) -> None:
+        """
+        Appends integers between 1 and 999 to a list of number for further statistical processing.
+        """
         if number > 0:
             self.numbers.append(number)
 
@@ -58,12 +61,21 @@ class DataCapture:
         return self
 
     def less(self, x: int) -> list:
+        """
+        Returns a list of numbers lesser than "x".
+        """
         return self.stats[x]["less"]
 
     def greater(self, x: int) -> list:
+        """
+        Returns a list of numbers greater than "x".
+        """
         return self.stats[x]["greater"]
 
     def between(self, start: int, end: int) -> list:
+        """
+        Returns list of integers between "start" and "end" that were processed via "add()" and "build_stats()" methods.
+        """
         end_idx = self.stats[start]["greater"].index(end)
         if len(self.stats[start]["number_and_repetitions"]) > 1:
             return self.stats[start]["number_and_repetitions"] + self.stats[start]["greater"][:end_idx + 1]
