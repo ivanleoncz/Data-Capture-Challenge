@@ -20,7 +20,7 @@ class TestDataCapture(unittest.TestCase):
         self.assertTrue(hasattr(self.dc, "numbers"))
         self.assertTrue(isinstance(self.dc.numbers, list))
         self.assertTrue(hasattr(self.dc, "stats"))
-        self.assertTrue(isinstance(self.dc.stats, dict))
+        self.assertTrue(isinstance(self.dc.stats, dict))  # 'dict' is the parent class of 'defaultdict'
 
     def test_input_validation(self):
         """

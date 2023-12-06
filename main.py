@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 
 def validate_parameter(func):
     """
@@ -39,7 +41,7 @@ class DataCapture:
 
     def __init__(self):
         self.numbers = list()
-        self.stats = dict()
+        self.stats = defaultdict(lambda: {"less": list(), "greater": list(), "number_and_repetitions": list()})
 
     @validate_parameter
     def add(self, number: int) -> None:
@@ -86,12 +88,11 @@ class DataCapture:
         for n in self.numbers:
             idx_less = self.numbers.index(n)
             idx_greater = len(self.numbers) - self.numbers[::-1].index(n) - 1
-            if n not in self.stats:
-                self.stats[n] = {
-                    "less": self.numbers[:idx_less],
-                    "greater": self.numbers[idx_greater + 1:],
-                    "number_and_repetitions": self.numbers[idx_less: idx_greater + 1]
-                }
+            self.stats[n] = {
+                "less": self.numbers[:idx_less],
+                "greater": self.numbers[idx_greater + 1:],
+                "number_and_repetitions": self.numbers[idx_less: idx_greater + 1]
+            }
 
         return self
 
