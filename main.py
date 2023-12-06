@@ -1,4 +1,35 @@
 
+def validate_parameter(func):
+    """
+    Decorator for validating single input of multiple methods.
+    """
+    def inner(self, x: int):
+        if not isinstance(x, int):
+            raise TypeError(f"only 'int' values are allowed (received '{type(x).__name__}'")
+        if func.__name__ == "add" and 1 > x or x >= 1000:
+            raise ValueError(f"only values from 1 to 999 are allowed (received {x})")
+        if func.__name__ in ("less", "greater") and x not in self.numbers:
+            raise ValueError(f"'{x}' was not added/processed. See add() and build_stats() for more info.")
+        return func(self, x)
+
+    return inner
+
+
+def validate_parameters(func):
+    """
+    Decorator for validating "self.between" method inputs.
+    """
+    def inner(self, start: int, end: int):
+        if not isinstance(start, int) or not isinstance(start, int):
+            raise TypeError(f"only 'int' values are allowed (received '{type(start).__name__}' and "
+                            f"'{type(end).__name__}'")
+        if start not in self.numbers or end not in self.numbers:
+            raise ValueError(f"'{start}' and/or '{end}' was/were not processed. See add() and "
+                             f"build_stats() for more info.")
+        return func(self, start, end)
+
+    return inner
+
 
 class DataCapture:
     """
@@ -10,9 +41,10 @@ class DataCapture:
         self.numbers = list()
         self.stats = dict()
 
+    @validate_parameter
     def add(self, number: int) -> None:
         """
-        Appends integers between 1 and 999 to a list of number for further statistical processing.
+        Appends integers between 1 and 999 to a list (self.numbers) for further statistical processing.
         """
         if number > 0:
             self.numbers.append(number)
@@ -46,6 +78,9 @@ class DataCapture:
         }
 
         """
+        if not self.numbers:
+            raise TypeError("cannot build statistics without numbers. Use add() method to add some.")
+
         self.numbers.sort()
 
         for n in self.numbers:
@@ -60,18 +95,21 @@ class DataCapture:
 
         return self
 
+    @validate_parameter
     def less(self, x: int) -> list:
         """
         Returns a list of numbers lesser than "x".
         """
         return self.stats[x]["less"]
 
+    @validate_parameter
     def greater(self, x: int) -> list:
         """
         Returns a list of numbers greater than "x".
         """
         return self.stats[x]["greater"]
 
+    @validate_parameters
     def between(self, start: int, end: int) -> list:
         """
         Returns list of integers between "start" and "end" that were processed via "add()" and "build_stats()" methods.

@@ -8,6 +8,40 @@ class TestDataCapture(unittest.TestCase):
     def setUp(self):
         self.dc = DataCapture()
 
+    def test_attributes(self):
+        """
+        > Expected results: attributes must be present and if they are variables, they must be of certain types.
+        """
+        self.assertTrue(hasattr(self.dc, "add"))
+        self.assertTrue(hasattr(self.dc, "between"))
+        self.assertTrue(hasattr(self.dc, "build_stats"))
+        self.assertTrue(hasattr(self.dc, "less"))
+        self.assertTrue(hasattr(self.dc, "greater"))
+        self.assertTrue(hasattr(self.dc, "numbers"))
+        self.assertTrue(isinstance(self.dc.numbers, list))
+        self.assertTrue(hasattr(self.dc, "stats"))
+        self.assertTrue(isinstance(self.dc.stats, dict))
+
+    def test_input_validation(self):
+        """
+        > Expected results: all mentioned exceptions must be successfully raised.
+        """
+        self.assertRaises(TypeError, self.dc.build_stats)
+        self.assertRaises(TypeError, self.dc.add, "0")
+        self.assertRaises(ValueError, self.dc.add, 0)
+        self.assertRaises(ValueError, self.dc.add, 1200)
+        self.dc.add(4)
+        self.dc.add(6)
+        self.dc.add(3)
+        self.dc.add(9)
+        self.dc.add(1)
+        self.assertRaises(TypeError, self.dc.less, "5")
+        self.assertRaises(ValueError, self.dc.less, 5)
+        self.assertRaises(TypeError, self.dc.greater, "2")
+        self.assertRaises(ValueError, self.dc.greater, 2)
+        self.assertRaises(TypeError, self.dc.between, "1", 5)
+        self.assertRaises(ValueError, self.dc.between, 1, 5)
+
     def test_less_with_one_number(self):
         """
         > Expected result: empty list of lesser numbers, when there's only "a single input"
@@ -22,7 +56,7 @@ class TestDataCapture(unittest.TestCase):
         > Expected result: list of positive numbers lesser than "x"
         """
         x = 7
-        for n in (3, 9, 0, 7, 5):
+        for n in (3, 9, 7, 5):
             self.dc.add(n)
         self.stats = self.dc.build_stats()
         self.assertEqual(first=self.stats.less(x=x), second=[3, 5])
@@ -32,7 +66,7 @@ class TestDataCapture(unittest.TestCase):
         > Expected result: list of positive numbers lesser than "x"
         """
         x = 6
-        for n in (2, -1, 1, 1, 3, 9, 5, 2, 6, 4):
+        for n in (2, 1, 1, 3, 9, 5, 2, 6, 4):
             self.dc.add(n)
         self.stats = self.dc.build_stats()
         self.assertEqual(first=self.stats.less(x=x), second=[1, 1, 2, 2, 3, 4, 5])
