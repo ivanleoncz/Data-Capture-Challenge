@@ -18,11 +18,11 @@ Code challenge of obtaining statistical data from a list of numbers.
 >>> dc.add(8)
 >>> stats = dc.build_stats()
 >>> stats.less(3)
-[1, 1]
+2
 >>> stats.greater(1)
-[3, 4, 8]
+3
 >>> stats.between(1, 3)
-[1, 1, 3]
+3
 ```
 
 ### Running Tests
